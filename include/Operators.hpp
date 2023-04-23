@@ -34,6 +34,18 @@ struct ExponentialOp {
 };
 
 template <Operand T>
+struct ReluOp {
+    T operator()(T x) { return x > 0 ? x : 0; }
+    T dx(T x) { return x > 0 ? 1 : 0; }
+};
+
+template <Operand T>
+struct NegativeOp {
+    T operator()(T x) { return -x; }
+    T dx(T x) { return -1.0; }
+};
+
+template <Operand T>
 struct AdditionOp {
     T operator()(T x, T y) { return x + y; }
     T dx(T x, T y) { return 1.0; }
@@ -46,6 +58,14 @@ struct ProductOp {
     T dx(T x, T y) { return y; }
     T dy(T x, T y) { return x; }
 };
+
+template <Operand T>
+struct PowOp {
+    T operator()(T x, T y) { return pow(x, y); }
+    T dx(T x, T y) { return y * pow(x, y - 1.0); }
+    T dy(T x, T y) { return log(x) * pow(x, y); }
+};
+
 }  // namespace micrograd::operators
 
 #endif  // OPERATORS_HPP
